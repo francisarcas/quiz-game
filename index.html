@@ -1,619 +1,610 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz</title>
-    
-    <style>
-        :root {
-            --background-colour-light: #ececec;
-            --background-colour-dark: #121212;
-            --text-colour-light: #333;
-            --text-colour-dark: #fff;
-            --header-height: 60px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz</title>
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: var(--background-colour-light);
-            color: var(--text-colour-light);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - var(--header-height));
-            margin-top: var(--header-height);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+<style>
+:root{
+--background-colour-light:#ececec;
+--background-colour-dark:#121212;
+--text-colour-light:#333;
+--text-colour-dark:#fff;
+--header-height:60px;
+}
 
-        /* ── Header ── */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: var(--header-height);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            box-sizing: border-box;
-            z-index: 10;
-        }
+body{
+font-family:Arial,sans-serif;
+background-color:var(--background-colour-light);
+color:var(--text-colour-light);
+margin:0;
+padding:0;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding-top:var(--header-height);
+box-sizing:border-box;
+transition:background-color .3s ease,color .3s ease;
+}
 
-        .header h1 {
-            font-size: 1.8em;
-            margin: 0;
-            color: inherit;
-            cursor: pointer;
-        }
+/* header */
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:var(--header-height);
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 20px;
+box-sizing:border-box;
+z-index:10;
+}
 
-        .header .subtitle {
-            font-size: 1em;
-            margin: 0;
-            color: inherit;
-            text-align: right;
-        }
+.header h1{
+font-size:1.8em;
+margin:0;
+color:inherit;
+cursor:pointer;
+}
 
-        /* ── Difficulty badge (header) ── */
-        .difficulty-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 0.75em;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            border: 2px solid transparent;
-        }
+.header-right{
+display:flex;
+align-items:center;
+gap:10px;
+}
 
-        .difficulty-badge.easy {
-            background: #d4edda;
-            color: #1a6630;
-            border-color: #28a745;
-        }
+.header .subtitle{
+font-size:1em;
+margin:0;
+color:inherit;
+text-align:right;
+}
 
-        .difficulty-badge.medium {
-            background: #ffe8cc;
-            color: #7d3c00;
-            border-color: #fd7e14;
-        }
+/* difficulty badge */
 
-        .difficulty-badge.hard {
-            background: #f8d7da;
-            color: #7b1c24;
-            border-color: #dc3545;
-        }
+.difficulty-badge{
+display:inline-flex;
+align-items:center;
+gap:5px;
+padding:4px 12px;
+border-radius:999px;
+font-size:.75em;
+font-weight:700;
+letter-spacing:.06em;
+text-transform:uppercase;
+border:2px solid transparent;
+}
 
-        body.dark-mode .difficulty-badge.easy {
-            background: #1a3d22;
-            color: #6fcf8a;
-            border-color: #28a745;
-        }
+.difficulty-badge.easy{
+background:#d4edda;
+color:#1a6630;
+border-color:#28a745;
+}
 
-        body.dark-mode .difficulty-badge.medium {
-            background: #3d2600;
-            color: #ffb366;
-            border-color: #fd7e14;
-        }
+.difficulty-badge.medium{
+background:#ffe8cc;
+color:#7d3c00;
+border-color:#fd7e14;
+}
 
-        body.dark-mode .difficulty-badge.hard {
-            background: #3d0a0e;
-            color: #f08090;
-            border-color: #dc3545;
-        }
+.difficulty-badge.hard{
+background:#f8d7da;
+color:#7b1c24;
+border-color:#dc3545;
+}
 
-        /* ── Quiz container ── */
-        .quiz-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-            transition: background 0.3s ease;
-            margin: 20px;
-            box-sizing: border-box;
-        }
+body.dark-mode .difficulty-badge.easy{
+background:#1a3d22;
+color:#6fcf8a;
+border-color:#28a745;
+}
 
-        .hidden {
-            display: none;
-        }
+body.dark-mode .difficulty-badge.medium{
+background:#3d2600;
+color:#ffb366;
+border-color:#fd7e14;
+}
 
-        /* ── Category selection ── */
-        .category-selection {
-            font-size: 1.2em;
-        }
+body.dark-mode .difficulty-badge.hard{
+background:#3d0a0e;
+color:#f08090;
+border-color:#dc3545;
+}
 
-        .category-selection select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 1em;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
+/* quiz container */
 
-        .field-label {
-            font-size: 0.85em;
-            font-weight: 600;
-            text-align: left;
-            display: block;
-            margin-top: 14px;
-            margin-bottom: 6px;
-            color: inherit;
-            opacity: 0.7;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+.quiz-container{
+background:#fff;
+padding:20px;
+border-radius:8px;
+box-shadow:0 4px 6px rgba(0,0,0,.1);
+width:100%;
+max-width:600px;
+text-align:center;
+transition:background .3s ease;
+margin:20px;
+box-sizing:border-box;
+}
 
-        /* ── Segmented control ── */
-        .segmented-control {
-            display: flex;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #007BFF;
-            width: 100%;
-        }
+.hidden{display:none}
 
-        .segmented-control input[type="radio"] {
-            display: none;
-        }
+/* category */
 
-        .segmented-control label {
-            flex: 1;
-            padding: 10px 0;
-            text-align: center;
-            font-size: 0.95em;
-            font-weight: 600;
-            cursor: pointer;
-            background: transparent;
-            color: #007BFF;
-            transition: background 0.2s ease, color 0.2s ease;
-            user-select: none;
-        }
+.category-selection{font-size:1.2em}
 
-        /* Easy selected */
-        #diff-easy:checked ~ label[for="diff-easy"] {
-            background: #28a745;
-            color: #fff;
-            border-color: #28a745;
-        }
+.category-selection select{
+width:100%;
+padding:10px;
+margin:10px 0;
+font-size:1em;
+border-radius:8px;
+border:1px solid #ccc;
+}
 
-        /* Medium selected */
-        #diff-medium:checked ~ label[for="diff-medium"] {
-            background: #fd7e14;
-            color: #fff;
-        }
+.field-label{
+font-size:.85em;
+font-weight:600;
+text-align:left;
+display:block;
+margin-top:14px;
+margin-bottom:6px;
+opacity:.7;
+text-transform:uppercase;
+letter-spacing:.05em;
+}
 
-        /* Hard selected */
-        #diff-hard:checked ~ label[for="diff-hard"] {
-            background: #dc3545;
-            color: #fff;
-        }
+/* segmented */
 
-        /* Dividers between segments */
-        .segmented-control label + label {
-            border-left: 2px solid #007BFF;
-        }
+.segmented-control{
+display:flex;
+border-radius:8px;
+overflow:hidden;
+border:1px solid #007BFF;
+width:100%;
+}
 
-        /* Dark mode segmented control */
-        body.dark-mode .segmented-control {
-            border-color: #4a9eff;
-        }
+.segmented-control input[type="radio"]{display:none}
 
-        body.dark-mode .segmented-control label {
-            color: #4a9eff;
-        }
+.segmented-control label{
+flex:1;
+padding:10px 0;
+text-align:center;
+font-size:.95em;
+font-weight:600;
+cursor:pointer;
+background:transparent;
+color:#007BFF;
+transition:.2s;
+}
 
-        body.dark-mode .segmented-control label + label {
-            border-left-color: #4a9eff;
-        }
+#diff-easy:checked~label[for="diff-easy"]{
+background:#28a745;
+color:#fff;
+}
 
-        .category-selection button {
-            background: #007BFF;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            font-size: 1em;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-        }
+#diff-medium:checked~label[for="diff-medium"]{
+background:#fd7e14;
+color:#fff;
+}
 
-        .category-selection button:hover {
-            background: #0056b3;
-        }
+#diff-hard:checked~label[for="diff-hard"]{
+background:#dc3545;
+color:#fff;
+}
 
-        /* ── Quiz section ── */
-        .progress-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.segmented-control label+label{border-left:2px solid #007BFF}
 
-        .progress {
-            font-size: 1em;
-            margin-bottom: 10px;
-            text-align: right;
-            color: inherit;
-        }
+.category-selection button{
+background:#007BFF;
+color:#fff;
+border:none;
+padding:10px 15px;
+font-size:1em;
+border-radius:8px;
+cursor:pointer;
+width:100%;
+margin-top:20px;
+}
 
-        .timer {
-            --percentage: 100;
-            background: conic-gradient(#007BFF calc(var(--percentage) * 1%), #ccc 0);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-        }
+.category-selection button:hover{background:#0056b3}
 
-        .question {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            margin-top: 2%;
-        }
+/* quiz */
 
-        .options button {
-            display: block;
-            background: #007BFF;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            width: 100%;
-        }
+.progress-container{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
 
-        .options button:hover:not(:disabled) {
-            background: #0056b3;
-        }
+.progress{
+font-size:1em;
+margin-bottom:10px;
+}
 
-        .options button.correct {
-            background: #28a745;
-        }
+.timer{
+--percentage:100;
+background:conic-gradient(#007BFF calc(var(--percentage)*1%),#ccc 0);
+width:20px;
+height:20px;
+border-radius:50%;
+}
 
-        .options button.incorrect {
-            background: #dc3545;
-        }
+.question{
+font-size:1.2em;
+margin-bottom:20px;
+margin-top:2%;
+}
 
-        .result {
-            font-size: 1.5em;
-            margin-top: 20px;
-        }
+.options button{
+display:block;
+background:#007BFF;
+color:#fff;
+border:none;
+padding:10px 15px;
+margin:10px 0;
+border-radius:8px;
+cursor:pointer;
+font-size:1em;
+width:100%;
+}
 
-        .play-again {
-            background: #007BFF;
-            color: #fff;
-            padding: 10px 15px;
-            font-size: 1em;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-        }
+.options button:hover:not(:disabled){background:#0056b3}
 
-        .play-again:hover {
-            background: #0056b3;
-        }
+.options button.correct{background:#28a745}
+.options button.incorrect{background:#dc3545}
 
-        /* ── Dark mode ── */
-        .dark-mode-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #007BFF;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            font-size: 1em;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+.result{
+font-size:1.5em;
+margin-top:20px;
+}
 
-        .dark-mode-toggle:hover {
-            background: #0056b3;
-        }
+.play-again{
+background:#007BFF;
+color:#fff;
+padding:10px 15px;
+font-size:1em;
+border-radius:8px;
+border:none;
+cursor:pointer;
+width:100%;
+margin-top:20px;
+}
 
-        body.dark-mode {
-            background-color: var(--background-colour-dark);
-            color: var(--text-colour-dark);
-        }
+.dark-mode-toggle{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#007BFF;
+color:#fff;
+border:none;
+padding:10px 15px;
+font-size:1em;
+border-radius:8px;
+cursor:pointer;
+}
 
-        body.dark-mode .quiz-container {
-            background: #333;
-        }
+body.dark-mode{
+background-color:var(--background-colour-dark);
+color:var(--text-colour-dark);
+}
 
-        body.dark-mode .category-selection select {
-            background: #444;
-            color: #fff;
-            border: 1px solid #666;
-        }
+body.dark-mode .quiz-container{background:#333}
 
-        /* ── Responsive ── */
-        @media (max-width: 480px) {
-            .header h1       { font-size: 1.4em; }
-            .header .subtitle { font-size: 0.85em; }
-            .quiz-container  { margin: 12px; padding: 16px; }
-        }
-    </style>
+body.dark-mode .category-selection select{
+background:#444;
+color:#fff;
+border:1px solid #666;
+}
+
+/* responsive */
+
+@media(max-width:480px){
+.header h1{font-size:1.4em}
+.header .subtitle{font-size:.85em}
+.quiz-container{margin:12px;padding:16px}
+}
+</style>
 </head>
+
 <body>
 
-    <div class="header">
-        <h1 onclick="location.reload();">Quiz</h1>
-        <div class="header-right">
-            <div class="subtitle" id="subtitle"></div>
-            <div id="header-badge"></div>
-        </div>
-    </div>
+<div class="header">
+<h1 onclick="location.reload()">Quiz</h1>
+<div class="header-right">
+<div class="subtitle" id="subtitle"></div>
+<div id="header-badge"></div>
+</div>
+</div>
 
-    <div class="quiz-container">
+<div class="quiz-container">
 
-        <!-- Category & Difficulty Selection -->
-        <div id="category-selection" class="category-selection">
-            <h3>Select a Category</h3>
+<div id="category-selection" class="category-selection">
+<h3>Select a Category</h3>
 
-            <label class="field-label" for="category-dropdown">Category</label>
-            <select id="category-dropdown"></select>
+<label class="field-label">Category</label>
+<select id="category-dropdown"></select>
 
-            <label class="field-label">Difficulty</label>
-            <!-- Segmented control: hidden radios + styled labels -->
-            <div class="segmented-control">
-                <input type="radio" name="difficulty" id="diff-easy"   value="easy">
-                <input type="radio" name="difficulty" id="diff-medium" value="medium" checked>
-                <input type="radio" name="difficulty" id="diff-hard"   value="hard">
-                <label for="diff-easy">🟢 Easy</label>
-                <label for="diff-medium">🟠 Medium</label>
-                <label for="diff-hard">🔴 Hard</label>
-            </div>
+<label class="field-label">Difficulty</label>
 
-            <button onclick="startQuiz()">Start Quiz</button>
-        </div>
+<div class="segmented-control">
+<input type="radio" name="difficulty" id="diff-easy" value="easy">
+<input type="radio" name="difficulty" id="diff-medium" value="medium" checked>
+<input type="radio" name="difficulty" id="diff-hard" value="hard">
 
-        <!-- Quiz Section -->
-        <div id="quiz" class="hidden">
-            <div class="progress-container">
-                <div id="timer" class="timer"></div>
-                <div id="progress" class="progress"></div>
-            </div>
-            <div id="question" class="question"></div>
-            <div id="options" class="options"></div>
-        </div>
+<label for="diff-easy">🟢 Easy</label>
+<label for="diff-medium">🟠 Medium</label>
+<label for="diff-hard">🔴 Hard</label>
+</div>
 
-        <!-- Result Section -->
-        <div id="result" class="result hidden"></div>
-        <button id="play-again" class="play-again hidden" onclick="restartQuiz()">Play Again</button>
-    </div>
+<button onclick="startQuiz()">Start Quiz</button>
+</div>
 
-    <button class="dark-mode-toggle" id="dark-mode-button" onclick="toggleDarkMode()">Dark Mode</button>
+<div id="quiz" class="hidden">
+<div class="progress-container">
+<div id="timer" class="timer"></div>
+<div id="progress" class="progress"></div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script>
-        const MAX_QUESTIONS   = 20;
-        const PASS_SCORE      = 85;
-        const TIMER_DURATION  = 20;
+<div id="question" class="question"></div>
+<div id="options" class="options"></div>
+</div>
 
-        let questions            = [];
-        let currentQuestionIndex = 0;
-        let score                = 0;
-        let selectedCategory     = '';
-        let selectedCategoryName = '';
-        let selectedDifficulty   = '';
-        let timerInterval;
-        let timeLeft;
+<div id="result" class="result hidden"></div>
+<button id="play-again" class="play-again hidden" onclick="restartQuiz()">Play Again</button>
 
-        // ── Fetch & populate categories ──────────────────────────────────────
-        async function fetchCategories() {
-            const response = await fetch('https://opentdb.com/api_category.php');
-            const data     = await response.json();
-            populateCategoryDropdown(data.trivia_categories);
-        }
+</div>
 
-        function populateCategoryDropdown(categories) {
-            const dropdown = document.getElementById('category-dropdown');
-            categories.forEach(category => {
-                const option       = document.createElement('option');
-                option.value       = category.id;
-                option.textContent = category.name;
-                dropdown.appendChild(option);
-            });
-        }
+<button class="dark-mode-toggle" id="dark-mode-button" onclick="toggleDarkMode()">Dark Mode</button>
 
-        // ── Fetch questions ──────────────────────────────────────────────────
-        async function fetchQuestions() {
-            const url = `https://opentdb.com/api.php?amount=${MAX_QUESTIONS}`
-                      + `&category=${selectedCategory}`
-                      + `&difficulty=${selectedDifficulty}`
-                      + `&type=multiple`;
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
-            const response = await fetch(url);
-            const data     = await response.json();
+<script>
 
-            // Decode everything up front so comparisons are always plain text
-            questions = data.results.map(q => ({
-                question: decodeHTMLEntities(q.question),
-                // Store decoded answer for reliable comparison
-                answer:   decodeHTMLEntities(q.correct_answer),
-                options:  [...q.incorrect_answers, q.correct_answer]
-                              .sort(() => Math.random() - 0.5)
-                              .map(decodeHTMLEntities),
-            }));
+const MAX_QUESTIONS=20
+const PASS_SCORE=85
+const TIMER_DURATION=20
 
-            loadQuestion();
-        }
+let questions=[]
+let currentQuestionIndex=0
+let score=0
+let selectedCategory=''
+let selectedCategoryName=''
+let selectedDifficulty=''
+let timerInterval
+let timeLeft
 
-        // ── Start quiz ───────────────────────────────────────────────────────
-        function startQuiz() {
-            const catDropdown = document.getElementById('category-dropdown');
-            const checkedDiff = document.querySelector('input[name="difficulty"]:checked');
+async function fetchCategories(){
+const response=await fetch('https://opentdb.com/api_category.php')
+const data=await response.json()
+populateCategoryDropdown(data.trivia_categories)
+}
 
-            selectedCategory     = catDropdown.value;
-            selectedCategoryName = catDropdown.options[catDropdown.selectedIndex].textContent;
-            selectedDifficulty   = checkedDiff ? checkedDiff.value : 'medium';
+function populateCategoryDropdown(categories){
+const dropdown=document.getElementById('category-dropdown')
+categories.forEach(category=>{
+const option=document.createElement('option')
+option.value=category.id
+option.textContent=category.name
+dropdown.appendChild(option)
+})
+}
 
-            // Header: category name
-            document.getElementById('subtitle').textContent = selectedCategoryName;
+async function fetchQuestions(){
 
-            // Header: difficulty badge
-            const dotMap = { easy: '🟢', medium: '🟠', hard: '🔴' };
-            document.getElementById('header-badge').innerHTML =
-                `<span class="difficulty-badge ${selectedDifficulty}">
-                    ${dotMap[selectedDifficulty]} ${selectedDifficulty}
-                 </span>`;
+const url=`https://opentdb.com/api.php?amount=${MAX_QUESTIONS}&category=${selectedCategory}&difficulty=${selectedDifficulty}&type=multiple`
 
-            document.getElementById('category-selection').classList.add('hidden');
-            document.getElementById('quiz').classList.remove('hidden');
-            fetchQuestions();
-        }
+const response=await fetch(url)
+const data=await response.json()
 
-        // ── Load question ────────────────────────────────────────────────────
-        function loadQuestion() {
-            if (currentQuestionIndex >= MAX_QUESTIONS || currentQuestionIndex >= questions.length) {
-                showResult();
-                return;
-            }
+if(!data.results || data.results.length===0){
 
-            const currentQuestion = questions[currentQuestionIndex];
-            document.getElementById('question').textContent = currentQuestion.question;
-            updateProgress();
+alert("No questions exist for this category at that difficulty. Try another difficulty.")
+restartQuiz()
+return
+}
 
-            const optionsContainer = document.getElementById('options');
-            optionsContainer.innerHTML = '';
+questions=data.results.map(q=>({
+question:decodeHTMLEntities(q.question),
+answer:decodeHTMLEntities(q.correct_answer),
+options:[...q.incorrect_answers,q.correct_answer]
+.sort(()=>Math.random()-0.5)
+.map(decodeHTMLEntities)
+}))
 
-            currentQuestion.options.forEach(option => {
-                const button       = document.createElement('button');
-                // Options already decoded — use textContent, not innerHTML
-                button.textContent = option;
-                button.onclick     = () => checkAnswer(button, option);
-                optionsContainer.appendChild(button);
-            });
+loadQuestion()
+}
 
-            startTimer();
-        }
+function startQuiz(){
 
-        // ── Timer ────────────────────────────────────────────────────────────
-        function startTimer() {
-            const timer = document.getElementById('timer');
-            timeLeft    = TIMER_DURATION;
-            timer.style.setProperty('--percentage', '100');
+const catDropdown=document.getElementById('category-dropdown')
+const checkedDiff=document.querySelector('input[name="difficulty"]:checked')
 
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timer.style.setProperty('--percentage', (timeLeft / TIMER_DURATION) * 100);
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    markAsIncorrect();
-                }
-            }, 1000);
-        }
+selectedCategory=catDropdown.value
+selectedCategoryName=catDropdown.options[catDropdown.selectedIndex].textContent
+selectedDifficulty=checkedDiff?checkedDiff.value:'medium'
 
-        function updateProgress() {
-            document.getElementById('progress').textContent =
-                `Question ${currentQuestionIndex + 1}/${MAX_QUESTIONS}`;
-        }
+document.getElementById('subtitle').textContent=selectedCategoryName
 
-        // Decode HTML entities from API responses
-        function decodeHTMLEntities(text) {
-            const doc = new DOMParser().parseFromString(text, 'text/html');
-            return doc.documentElement.textContent;
-        }
+const dotMap={easy:'🟢',medium:'🟠',hard:'🔴'}
 
-        // ── Answer checking ──────────────────────────────────────────────────
-        function highlightAnswers(selectedButton, correctAnswer) {
-            const buttons = document.querySelectorAll('.options button');
-            buttons.forEach(btn => {
-                // Compare plain text — no encoding mismatch possible
-                if (btn.textContent === correctAnswer) {
-                    btn.classList.add('correct');
-                }
-                btn.disabled = true;
-            });
-            if (selectedButton && selectedButton.textContent !== correctAnswer) {
-                selectedButton.classList.add('incorrect');
-            }
-        }
+document.getElementById('header-badge').innerHTML=
+`<span class="difficulty-badge ${selectedDifficulty}">
+${dotMap[selectedDifficulty]} ${selectedDifficulty}
+</span>`
 
-        function checkAnswer(button, selectedOption) {
-            clearInterval(timerInterval);
-            const { answer } = questions[currentQuestionIndex];
+document.getElementById('category-selection').classList.add('hidden')
+document.getElementById('quiz').classList.remove('hidden')
 
-            if (selectedOption === answer) score++;
+fetchQuestions()
+}
 
-            highlightAnswers(button, answer);
-            setTimeout(() => { currentQuestionIndex++; loadQuestion(); }, 2000);
-        }
+function loadQuestion(){
 
-        function markAsIncorrect() {
-            highlightAnswers(null, questions[currentQuestionIndex].answer);
-            setTimeout(() => { currentQuestionIndex++; loadQuestion(); }, 2000);
-        }
+if(currentQuestionIndex>=MAX_QUESTIONS||currentQuestionIndex>=questions.length){
+showResult()
+return
+}
 
-        // ── Result ───────────────────────────────────────────────────────────
-        function showResult() {
-            const resultContainer = document.getElementById('result');
-            const percentage      = Math.round((score / MAX_QUESTIONS) * 100);
+const currentQuestion=questions[currentQuestionIndex]
 
-            document.getElementById('quiz').classList.add('hidden');
-            resultContainer.classList.remove('hidden');
-            resultContainer.textContent = percentage >= PASS_SCORE
-                ? `🎉 Congratulations! You nailed it with a score of ${percentage}%.`
-                : `😅 Great effort! You scored ${percentage}%. Remember, every attempt is a chance to grow. You'll do even better next time!`;
+document.getElementById('question').textContent=currentQuestion.question
+updateProgress()
 
-            document.getElementById('play-again').classList.remove('hidden');
-            if (percentage >= PASS_SCORE) launchConfetti();
-        }
+const optionsContainer=document.getElementById('options')
+optionsContainer.innerHTML=''
 
-        function restartQuiz() {
-            score                = 0;
-            currentQuestionIndex = 0;
-            document.getElementById('result').classList.add('hidden');
-            document.getElementById('quiz').classList.add('hidden');
-            document.getElementById('play-again').classList.add('hidden');
-            document.getElementById('category-selection').classList.remove('hidden');
-            document.getElementById('subtitle').textContent   = '';
-            document.getElementById('header-badge').innerHTML = '';
-        }
+currentQuestion.options.forEach(option=>{
+const button=document.createElement('button')
+button.textContent=option
+button.onclick=()=>checkAnswer(button,option)
+optionsContainer.appendChild(button)
+})
 
-        function launchConfetti() {
-            confetti({ particleCount: 100, spread: 90, origin: { x: 0.5, y: 0.5 } });
-        }
+startTimer()
+}
 
-        // ── Dark mode ────────────────────────────────────────────────────────
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('dark-mode-button').textContent = isDark ? 'Light Mode' : 'Dark Mode';
-            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
-        }
+function startTimer(){
 
-        function applySavedMode() {
-            if (localStorage.getItem('darkMode') === 'enabled') {
-                document.body.classList.add('dark-mode');
-                document.getElementById('dark-mode-button').textContent = 'Light Mode';
-            }
-        }
+const timer=document.getElementById('timer')
+timeLeft=TIMER_DURATION
+timer.style.setProperty('--percentage','100')
 
-        // ── Init ─────────────────────────────────────────────────────────────
-        window.onload = () => {
-            applySavedMode();
-            fetchCategories();
-        };
-    </script>
+clearInterval(timerInterval)
+
+timerInterval=setInterval(()=>{
+
+timeLeft--
+
+timer.style.setProperty('--percentage',(timeLeft/TIMER_DURATION)*100)
+
+if(timeLeft<=0){
+clearInterval(timerInterval)
+markAsIncorrect()
+}
+
+},1000)
+}
+
+function updateProgress(){
+document.getElementById('progress').textContent=`Question ${currentQuestionIndex+1}/${MAX_QUESTIONS}`
+}
+
+function decodeHTMLEntities(text){
+const doc=new DOMParser().parseFromString(text,'text/html')
+return doc.documentElement.textContent
+}
+
+function highlightAnswers(selectedButton,correctAnswer){
+
+const buttons=document.querySelectorAll('.options button')
+
+buttons.forEach(btn=>{
+if(btn.textContent===correctAnswer){
+btn.classList.add('correct')
+}
+btn.disabled=true
+})
+
+if(selectedButton && selectedButton.textContent!==correctAnswer){
+selectedButton.classList.add('incorrect')
+}
+}
+
+function checkAnswer(button,selectedOption){
+
+clearInterval(timerInterval)
+
+const {answer}=questions[currentQuestionIndex]
+
+if(selectedOption===answer) score++
+
+highlightAnswers(button,answer)
+
+setTimeout(()=>{
+currentQuestionIndex++
+loadQuestion()
+},2000)
+}
+
+function markAsIncorrect(){
+
+highlightAnswers(null,questions[currentQuestionIndex].answer)
+
+setTimeout(()=>{
+currentQuestionIndex++
+loadQuestion()
+},2000)
+}
+
+function showResult(){
+
+const resultContainer=document.getElementById('result')
+
+const percentage=Math.round((score/MAX_QUESTIONS)*100)
+
+document.getElementById('quiz').classList.add('hidden')
+
+resultContainer.classList.remove('hidden')
+
+resultContainer.textContent=
+percentage>=PASS_SCORE
+?`🎉 Congratulations! You nailed it with a score of ${percentage}%.`
+:`😅 Great effort! You scored ${percentage}%.`
+
+document.getElementById('play-again').classList.remove('hidden')
+
+if(percentage>=PASS_SCORE) launchConfetti()
+}
+
+function restartQuiz(){
+
+score=0
+currentQuestionIndex=0
+
+document.getElementById('result').classList.add('hidden')
+document.getElementById('quiz').classList.add('hidden')
+document.getElementById('play-again').classList.add('hidden')
+document.getElementById('category-selection').classList.remove('hidden')
+document.getElementById('subtitle').textContent=''
+document.getElementById('header-badge').innerHTML=''
+}
+
+function launchConfetti(){
+confetti({particleCount:100,spread:90,origin:{x:0.5,y:0.5}})
+}
+
+function toggleDarkMode(){
+
+document.body.classList.toggle('dark-mode')
+
+const isDark=document.body.classList.contains('dark-mode')
+
+document.getElementById('dark-mode-button').textContent=isDark?'Light Mode':'Dark Mode'
+
+localStorage.setItem('darkMode',isDark?'enabled':'disabled')
+}
+
+function applySavedMode(){
+
+if(localStorage.getItem('darkMode')==='enabled'){
+
+document.body.classList.add('dark-mode')
+document.getElementById('dark-mode-button').textContent='Light Mode'
+
+}
+}
+
+window.onload=()=>{
+applySavedMode()
+fetchCategories()
+}
+
+</script>
+
 </body>
 </html>
